@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+
+require "currayon"
+require "daemons"
+
+dot_currayon = File.expand_path("~/.currayon")
+user, password = File.open(dot_currayon).readlines.map{|line| line.chomp }
+
+Currayon.setup do
+  o :user => user
+  o :password => password
+end
+
+#Daemonize.daemonize
+
+Currayon.new
