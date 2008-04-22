@@ -51,14 +51,23 @@ class Currayon
     include Singleton
 
     def initialize
+      # create log dir
       FileUtils.mkdir_p Config.log_dir
+
+      # setup log name and lotation
       super(File.join(Config.log_dir, "currayon.log"), Config.log_lotation)
+
+      # define format
       @formatter = lambda do |severity, time, progname, msg|
         timestamp = time.strftime "%Y-%m-%d %H:%M:%S"
         "#{severity} #{timestamp} #{msg}\n"
       end
+
+      # log level
+      @level = $DEBUG ? Logger::DEBUG : Logger::INFO
     end
 
+    # delegate
     def self.method_missing(name, *args)
       instance.__send__(name, *args)
     end
@@ -76,7 +85,7 @@ class Currayon
     def currencies; @xu.currencies; end
 
     def push(*args)
-      Logger.debug "pushed to cc queue: " + args.join(" ")
+      Logger.debug "pushed to cc queue: " + args[1..-1].join(" ")
       @queue.push(args)
     end
 
